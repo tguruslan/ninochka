@@ -25,7 +25,8 @@
                 url: URL,
                 type: 'GET',
                 success: function(data) {
-                    parseHTML(data);
+                    getLessons(data);
+                    summLessons(data);
                 },
                 error: function(error) {
                     console.error('Error:', error);
@@ -33,7 +34,7 @@
             });
         }
 
-        function parseHTML(data) {
+        function getLessons(data) {
             const parser = new DOMParser();
             const doc = parser.parseFromString(data, 'text/html');
             const rows = $(doc).find('table tr');
@@ -48,6 +49,31 @@
             });
 
             renderEvents(result);
+        }
+
+        function summLessons(data) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(data, 'text/html');
+            const rows = $(doc).find('table tr');
+            
+            var day = '<div class="col s12 m6">'+
+                        '<ul class="collection with-header z-depth-5">'+
+                            '<li class="collection-header"><h4>Занять за місяць</h4></li>';
+
+            		const result = [];
+                    rows.each(function() {
+                        const cells = $(this).find('td:nth-child(n+5):nth-child(-n+6)');
+                        const rowData = cells.map(function() {
+                            return $(this).text().trim();
+                        }).get();
+                        if(rowData[0] && (rowData[0] != 'Ім\'я')){
+                            day += '<li class="collection-item">'+rowData[0].replace(/\(.*?\)/g, '')+'<span class="secondary-content">'+rowData[1]+'</span></li>';
+                        }
+
+                    });
+                    day += '</ul>'+
+                '</div>';
+                $('.row').append(day);
         }
 
         function groupEventsByDate(events) {

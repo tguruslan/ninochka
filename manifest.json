@@ -1,0 +1,16 @@
+{
+  "background_color": "#ffffff",
+  "dir": "auto",
+  "display": "standalone",
+  "name": "Розклад Ніночки",
+  "orientation": "any",
+  "scope": "/ninochka/",
+  "short_name": "Розклад Ніночки",
+  "start_url": "/ninochka/",
+  "theme_color": "#ffffff",
+  "id": "timetable",
+  "lang": "uk",
+  "categories": [
+    "education"
+  ]
+}

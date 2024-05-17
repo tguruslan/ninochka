@@ -6,89 +6,90 @@
     <meta name="robots" content="noindex, nofollow">
     <meta name="googlebot" content="noindex, nofollow">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style id="compiled-css" type="text/css">
-      .event-date{
-          margin: 10px;
-          border:1px solid #f8bbd0;
-          border-radius:5px;
-          background-color:#fce4ec;
-          color:#263238;
-      }
-      .event-date span {
-          padding: 20px;
-          font-weight: bold;
-          display:block;
-      }
-      .event {
-          margin:3px;
-          padding: 20px 5px;
-          border:1px solid #f8bbd0;
-          border-radius:5px;
-          background-color:#e8f5e9;
-      }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">            
   </head>
   <body>
-      <div id="eventsContainer"></div>
-      <script type="text/javascript">
-        const URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT_jDlK16raPFNfxz-rvNX9DQYDT0LnNTOGJAa5DqFJlMnnkZyr8Gutgb8yciiXy10a2sordGS8DPe4/pubhtml?gid=0&single=true';
+      <div class="row teal"></div>
+      <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+      <script>
+      	const URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT_jDlK16raPFNfxz-rvNX9DQYDT0LnNTOGJAa5DqFJlMnnkZyr8Gutgb8yciiXy10a2sordGS8DPe4/pubhtml?gid=0&single=true';
+
         function getData() {
-            fetch(URL)
-                .then(response => response.text())
-                .then(data => {
+            $.ajax({
+                url: URL,
+                type: 'GET',
+                success: function(data) {
                     parseHTML(data);
-                })
-                .catch(error => {
+                },
+                error: function(error) {
                     console.error('Error:', error);
-                });
+                }
+            });
         }
+
         function parseHTML(data) {
             const parser = new DOMParser();
             const doc = parser.parseFromString(data, 'text/html');
-            const rows = doc.querySelectorAll('table tr');
-        
+            const rows = $(doc).find('table tr');
+
             const result = [];
-            rows.forEach(row => {
-                const cells = row.querySelectorAll('td:nth-child(n+2):nth-child(-n+4)');
-                const rowData = Array.from(cells).map(cell => cell.textContent.trim());
+            rows.each(function() {
+                const cells = $(this).find('td:nth-child(n+2):nth-child(-n+4)');
+                const rowData = cells.map(function() {
+                    return $(this).text().trim();
+                }).get();
                 result.push(rowData);
             });
-        
+
             renderEvents(result);
         }
-        
+
         function groupEventsByDate(events) {
             const groupedEvents = {};
             events.forEach(event => {
                 const [date, time, title] = event;
-                if(time){
+                if (time) {
                     if (!groupedEvents[date]) {
                         groupedEvents[date] = [];
                     }
-                    groupedEvents[date].push({ time, title });   
+                    groupedEvents[date].push({ time, title });
                 }
             });
             return groupedEvents;
         }
+
         function renderEvents(events) {
-            const container = document.getElementById('eventsContainer');
+            const container = $('.row');
             const groupedEvents = groupEventsByDate(events);
             console.log(events);
             console.log(groupedEvents);
             for (const date in groupedEvents) {
-                const dateHeader = document.createElement('div');
-                dateHeader.className = 'event-date';
-                dateHeader.innerHTML = '<span>'+date+'</span>';
-                container.appendChild(dateHeader);
-                groupedEvents[date].forEach(event => {
-                    const eventDiv = document.createElement('div');
-                    eventDiv.className = 'event';
-                    eventDiv.textContent = `${event.time} ${event.title}`;
-                    dateHeader.appendChild(eventDiv);
-                });
+                var day = '<div class="col s12 m6">'+
+                        '<ul class="collection with-header z-depth-5">'+
+                            '<li class="collection-header"><h4><i class="material-icons">date_range</i> ' + date + '</h4></li>';
+
+                            groupedEvents[date].forEach(event => {
+                                day += '<li class="collection-item">'+
+                                '<span class="">'+
+                                '<i class="tiny material-icons">access_time</i> '+
+                                '</span>'+
+                                event.time+
+                                '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+
+                                event.title+
+                                '</li>';
+                            });
+
+                    day += '</ul>'+
+                '</div>';
+                container.append(day);
             }
         }
-        getData();
-    </script>
+
+        $(document).ready(function() {
+            getData();
+        });
+      </script>
   </body>
 </html>

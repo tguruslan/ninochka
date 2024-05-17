@@ -14,6 +14,9 @@
       <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
       <script>
+        if (typeof navigator.serviceWorker !== 'undefined') {
+            navigator.serviceWorker.register('sw.js')
+        }
       	const URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT_jDlK16raPFNfxz-rvNX9DQYDT0LnNTOGJAa5DqFJlMnnkZyr8Gutgb8yciiXy10a2sordGS8DPe4/pubhtml?gid=0&single=true';
 
         function getData() {

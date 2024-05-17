@@ -10,6 +10,14 @@
   "theme_color": "#ffffff",
   "id": "timetable",
   "lang": "uk",
+  "icons": [
+    {
+      "src": "icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
   "categories": [
     "education"
   ]

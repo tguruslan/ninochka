@@ -26,7 +26,12 @@ function getLessons(data) {
     rows.each(function() {
         const cells = $(this).find('td:nth-child(n+2):nth-child(-n+4)');
         const rowData = cells.map(function() {
-            return $(this).text().trim();
+            if(/^[0-9]+\.[0-9]+$/.test($(this).text().trim())){
+                    date=$(this).text().trim().split('.');
+                    return date[0].padStart(2,'0')+'.'+date[1].padStart(2,'0');
+                }else{
+                    return $(this).text().trim();
+                    }
         }).get();
         result.push(rowData);
     });

@@ -21,6 +21,7 @@ function getData() {
     });
 }
 
+
 function summLessons(data) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(data, 'text/html');
@@ -49,12 +50,12 @@ function summLessons(data) {
 function groupEventsByDate(events) {
     const groupedEvents = {};
     events.forEach(event => {
-        const [date, time, title] = event;
-        if (time) {
-            if (!groupedEvents[date]) {
-                groupedEvents[date] = [];
+        const [start, end, title] = event;
+        if (end) {
+            if (!groupedEvents[start]) {
+                groupedEvents[start] = [];
             }
-            groupedEvents[date].push({ time, title });
+            groupedEvents[start].push({ end, title });
         }else if(title){
             $('.row').append('<div class="col s12"><div class="card"><div class="card-content"><h6>Оновлено: '+title+'</h6></div></div></div>');
         }
@@ -92,5 +93,5 @@ function renderEvents(events) {
 }
 
 $(document).ready(function() {
-    getData();
+    getData();            
 });

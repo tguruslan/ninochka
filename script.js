@@ -26,7 +26,7 @@ function summLessons(data) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(data, 'text/html');
     const rows = $(doc).find('table tr');
-    
+
     var day = '<div class="col s12 m6">'+
                 '<ul class="collection with-header z-depth-5">'+
                     '<li class="collection-header"><h4>Занять за місяць</h4></li>';
@@ -51,11 +51,13 @@ function groupEventsByDate(events) {
     const groupedEvents = {};
     events.forEach(event => {
         const [start, end, title] = event;
+        const ds = new Date(parseInt(start));
+        const date = ds.getDate().toString().padStart(2, '0')+'.'+(ds.getMonth()+1).toString().padStart(2, '0');
         if (end) {
-            if (!groupedEvents[start]) {
-                groupedEvents[start] = [];
+            if (!groupedEvents[date]) {
+                groupedEvents[date] = [];
             }
-            groupedEvents[start].push({ end, title });
+            groupedEvents[date].push({ start, end, title });
         }else if(title){
             $('.row').append('<div class="col s12"><div class="card"><div class="card-content"><h6>Оновлено: '+title+'</h6></div></div></div>');
         }
@@ -66,12 +68,12 @@ function groupEventsByDate(events) {
 function renderEvents(events) {
     const container = $('.row');
     const groupedEvents = groupEventsByDate(events);
-    for (const start in groupedEvents) {
-        const ds = new Date(parseInt(start));                              
+    for (const date in groupedEvents) {                            
         var day = '<div class="col s12 m6">'+
                 '<ul class="collection with-header z-depth-5">'+
-                    '<li class="collection-header"><h4><i class="material-icons">date_range</i> ' + ds.getDate().toString().padStart(2, '0')+'.'+(ds.getMonth()+1).toString().padStart(2, '0') + '</h4></li>';
-                    groupedEvents[start].forEach(event => {
+                    '<li class="collection-header"><h4><i class="material-icons">date_range</i> ' + date + '</h4></li>';
+                    groupedEvents[date].forEach(event => {
+                        const ds = new Date(parseInt(event.start));
                         const de = new Date(parseInt(event.end));  
                         day += '<li class="collection-item">'+
                         '<span class="">'+

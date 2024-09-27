@@ -8,35 +8,17 @@ function getData() {
         url: URL,
         type: 'GET',
         success: function(data) {
-            getLessons(data);
-            summLessons(data);
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(data, 'text/html');
+            const json_data = $(doc).find('table tbody tr:first td:first').text();
+            const result = JSON.parse(json_data);
+            renderEvents(result);
+            /* summLessons(data) */;
         },
         error: function(error) {
             console.error('Error:', error);
         }
     });
-}
-
-function getLessons(data) {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(data, 'text/html');
-    const rows = $(doc).find('table tr');
-
-    const result = [];
-    rows.each(function() {
-        const cells = $(this).find('td:nth-child(n+2):nth-child(-n+4)');
-        const rowData = cells.map(function() {
-            if(/^[0-9]+\.[0-9]+$/.test($(this).text().trim())){
-                    date=$(this).text().trim().split('.');
-                    return date[0].padStart(2,'0')+'.'+date[1].padStart(2,'0');
-                }else{
-                    return $(this).text().trim();
-                    }
-        }).get();
-        result.push(rowData);
-    });
-
-    renderEvents(result);
 }
 
 function summLessons(data) {
@@ -83,17 +65,20 @@ function groupEventsByDate(events) {
 function renderEvents(events) {
     const container = $('.row');
     const groupedEvents = groupEventsByDate(events);
-    for (const date in groupedEvents) {
+    for (const start in groupedEvents) {
+        const ds = new Date(parseInt(start));                              
         var day = '<div class="col s12 m6">'+
                 '<ul class="collection with-header z-depth-5">'+
-                    '<li class="collection-header"><h4><i class="material-icons">date_range</i> ' + date + '</h4></li>';
-
-                    groupedEvents[date].forEach(event => {
+                    '<li class="collection-header"><h4><i class="material-icons">date_range</i> ' + ds.getDate().toString().padStart(2, '0')+'.'+(ds.getMonth()+1).toString().padStart(2, '0') + '</h4></li>';
+                    groupedEvents[start].forEach(event => {
+                        const de = new Date(parseInt(event.end));  
                         day += '<li class="collection-item">'+
                         '<span class="">'+
                         '<i class="tiny material-icons">access_time</i> '+
                         '</span>'+
-                        event.time+
+                        ds.getHours().toString().padStart(2, '0')+":"+ds.getMinutes().toString().padStart(2, '0')+
+                        "-"+
+                        de.getHours().toString().padStart(2, '0')+":"+de.getMinutes().toString().padStart(2, '0')+
                         '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+
                         event.title.replace(/\(.*?\)/g, '')+
                         (event.title.indexOf("особ") >= 0?'<span class="secondary-content"><i class="material-icons">grade</i></span>':"")+

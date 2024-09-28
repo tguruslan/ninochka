@@ -68,29 +68,33 @@ function groupEventsByDate(events) {
 function renderEvents(events) {
     const container = $('.row');
     const groupedEvents = groupEventsByDate(events);
-    for (const date in groupedEvents) {                            
-        var day = '<div class="col s12 m6">'+
-                '<ul class="collection with-header z-depth-5">'+
-                    '<li class="collection-header"><h4><i class="material-icons">date_range</i> ' + date + '</h4></li>';
-                    groupedEvents[date].forEach(event => {
-                        const ds = new Date(parseInt(event.start));
-                        const de = new Date(parseInt(event.end));  
-                        day += '<li class="collection-item">'+
-                        '<span class="">'+
-                        '<i class="tiny material-icons">access_time</i> '+
-                        '</span>'+
-                        ds.getHours().toString().padStart(2, '0')+":"+ds.getMinutes().toString().padStart(2, '0')+
-                        "-"+
-                        de.getHours().toString().padStart(2, '0')+":"+de.getMinutes().toString().padStart(2, '0')+
-                        '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+
-                        event.title.replace(/\(.*?\)/g, '')+
-                        (event.title.indexOf("особ") >= 0?'<span class="secondary-content"><i class="material-icons">grade</i></span>':"")+
-                        '</li>';
-                    });
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    for (const date in groupedEvents) {
+    	if((parseInt(groupedEvents[date][0]["start"]) >= today.getTime()) && (parseInt(groupedEvents[date][0]["start"]) <= new Date(today.getFullYear(),today.getMonth(),today.getDate() + 7).getTime())){
+                var day = '<div class="col s12 m6">'+
+                    '<ul class="collection with-header z-depth-5">'+
+                        '<li class="collection-header"><h4><i class="material-icons">date_range</i> ' + date + '</h4></li>';
+                        groupedEvents[date].forEach(event => {
+                            const ds = new Date(parseInt(event.start));
+                            const de = new Date(parseInt(event.end));  
+                            day += '<li class="collection-item">'+
+                            '<span class="">'+
+                            '<i class="tiny material-icons">access_time</i> '+
+                            '</span>'+
+                            ds.getHours().toString().padStart(2, '0')+":"+ds.getMinutes().toString().padStart(2, '0')+
+                            "-"+
+                            de.getHours().toString().padStart(2, '0')+":"+de.getMinutes().toString().padStart(2, '0')+
+                            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+
+                            event.title.replace(/\(.*?\)/g, '')+
+                            (event.title.indexOf("особ") >= 0?'<span class="secondary-content"><i class="material-icons">grade</i></span>':"")+
+                            '</li>';
+                        });
 
-            day += '</ul>'+
-        '</div>';
-        container.append(day);
+                day += '</ul>'+
+            '</div>';
+            container.append(day);
+        }
     }
 }
 

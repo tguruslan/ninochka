@@ -57,12 +57,12 @@ function summLessons(data) {
         totalHours+=summ_data[student];
         summ += '<li class="collection-item">'+student+
         '<span class="secondary-content">'+summ_data[student]+
-        " год\t&nbsp;\t&nbsp;\t&nbsp;\t"+studentSumm+' грн.</span>'+
+        " год\t&nbsp;\t&nbsp;\t"+studentSumm+' грн.</span>'+
         '</li>';
     }
     summ += '<li class="collection-item">'+'Всього:'+
         '<span class="secondary-content">'+totalHours+
-        " год\t&nbsp;\t&nbsp;\t&nbsp;\t"+totalSumm+' грн.</span>'+
+        " год\t&nbsp;\t&nbsp;\t"+totalSumm+' грн.</span>'+
         '</li>';
 
     summ += '</ul>'+

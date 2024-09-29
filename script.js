@@ -48,7 +48,7 @@ function summLessons(data) {
     }
     var totalSumm=0;
     var totalHours=0;
-    var summ = '<div class="col s12 m6">'+
+    var summ = '<div class="col s12">'+
                 '<ul class="collection with-header z-depth-5">';
     summ += '<li class="collection-header"><h4>Підсумок за місяць</h4></li>';
     for (const student in summ_data){
@@ -102,7 +102,7 @@ function renderEvents(events) {
       	(parseInt(groupedEvents[date][0]["start"]) >= today.getTime()) &&
       	(parseInt(groupedEvents[date][0]["start"]) <= new Date(today.getFullYear(),today.getMonth(),today.getDate() + 7).getTime())
       ){
-            var day = '<div class="col s12 m6">'+
+            var day = '<div class="col s12">'+
                 '<ul class="collection with-header z-depth-5">'+
                 '<li class="collection-header"><h4><i class="material-icons">date_range</i> ' + date + '</h4></li>';
             groupedEvents[date].forEach(event => {

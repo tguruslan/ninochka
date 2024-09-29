@@ -13,7 +13,7 @@ function getData() {
             const json_data = $(doc).find('table tbody tr:first td:first').text();
             const result = JSON.parse(json_data);
             renderEvents(result);
-            /* summLessons(data) */;
+            summLessons(result);
         },
         error: function(error) {
             console.error('Error:', error);
@@ -21,45 +21,72 @@ function getData() {
     });
 }
 
+function getPrice(name, hours){
+    if(name.toLowerCase().includes("pair")){
+  	    price=220;
+    }else{
+  	    price=180;
+    }
+    return price*hours;
+}
+
 
 function summLessons(data) {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(data, 'text/html');
-    const rows = $(doc).find('table tr');
+    var today = new Date();
+    var summ_data={};
+    for (const lesson in data){
+    	lesson_data=data[lesson];
+    	if(
+      		(lesson_data[3] == "work") &&
+        	(lesson_data[0] < new Date(today.getFullYear(),today.getMonth() + 1 ,1).getTime())
+        ){
+            if (!summ_data[lesson_data[2]]) {
+            	summ_data[lesson_data[2]] = 0;
+            }
+            summ_data[lesson_data[2]]+=((lesson_data[1]-lesson_data[0])/1000/60/60);
+      }
+    }
+    var totalSumm=0;
+    var totalHours=0;
+    var summ = '<div class="col s12 m6">'+
+                '<ul class="collection with-header z-depth-5">';
+    summ += '<li class="collection-header"><h4>Підсумок за місяць</h4></li>';
+    for (const student in summ_data){
+        var studentSumm=getPrice(student,summ_data[student]);
+        totalSumm+=studentSumm;
+        totalHours+=summ_data[student];
+        summ += '<li class="collection-item">'+student+
+        '<span class="secondary-content">'+summ_data[student]+
+        " годин\t&nbsp;\t&nbsp;\t&nbsp;\t&nbsp;\t"+studentSumm+' грн.</span>'+
+        '</li>';
+    }
+    summ += '<li class="collection-item">'+'Всього:'+
+        '<span class="secondary-content">'+totalHours+
+        " годин\t&nbsp;\t&nbsp;\t&nbsp;\t&nbsp;\t"+totalSumm+' грн.</span>'+
+        '</li>';
 
-    var day = '<div class="col s12 m6">'+
-                '<ul class="collection with-header z-depth-5">'+
-                    '<li class="collection-header"><h4>Занять за місяць</h4></li>';
-
-            const result = [];
-            rows.each(function() {
-                const cells = $(this).find('td:nth-child(n+5):nth-child(-n+6)');
-                const rowData = cells.map(function() {
-                    return $(this).text().trim();
-                }).get();
-                if(rowData[0] && (rowData[0] != 'Ім\'я')){
-                    day += '<li class="collection-item">'+rowData[0].replace(/\(.*?\)/g, '')+'<span class="secondary-content">'+rowData[1]+'</span></li>';
-                }
-
-            });
-            day += '</ul>'+
+    summ += '</ul>'+
         '</div>';
-        $('.row').append(day);
+    $('.row').append(summ);
 }
 
 function groupEventsByDate(events) {
     const groupedEvents = {};
     events.forEach(event => {
-        const [start, end, title] = event;
+        const [start, end, title, alias] = event;
         const ds = new Date(parseInt(start));
         const date = ds.getDate().toString().padStart(2, '0')+'.'+(ds.getMonth()+1).toString().padStart(2, '0');
         if (end) {
             if (!groupedEvents[date]) {
                 groupedEvents[date] = [];
             }
-            groupedEvents[date].push({ start, end, title });
+            groupedEvents[date].push({ start, end, title, alias});
         }else if(title){
-            $('.row').append('<div class="col s12"><div class="card"><div class="card-content"><h6>Оновлено: '+title+'</h6></div></div></div>');
+            $('.row').append(
+                '<div class="col s12"><div class="card"><div class="card-content"><h6>Оновлено: '+
+                title+
+                '</h6></div></div></div>'
+            );
         }
     });
     return groupedEvents;
@@ -71,28 +98,32 @@ function renderEvents(events) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     for (const date in groupedEvents) {
-    	if((parseInt(groupedEvents[date][0]["start"]) >= today.getTime()) && (parseInt(groupedEvents[date][0]["start"]) <= new Date(today.getFullYear(),today.getMonth(),today.getDate() + 7).getTime())){
-                var day = '<div class="col s12 m6">'+
-                    '<ul class="collection with-header z-depth-5">'+
-                        '<li class="collection-header"><h4><i class="material-icons">date_range</i> ' + date + '</h4></li>';
-                        groupedEvents[date].forEach(event => {
-                            const ds = new Date(parseInt(event.start));
-                            const de = new Date(parseInt(event.end));  
-                            day += '<li class="collection-item">'+
-                            '<span class="">'+
-                            '<i class="tiny material-icons">access_time</i> '+
-                            '</span>'+
-                            ds.getHours().toString().padStart(2, '0')+":"+ds.getMinutes().toString().padStart(2, '0')+
-                            "-"+
-                            de.getHours().toString().padStart(2, '0')+":"+de.getMinutes().toString().padStart(2, '0')+
-                            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+
-                            event.title.replace(/\(.*?\)/g, '')+
-                            (event.title.indexOf("особ") >= 0?'<span class="secondary-content"><i class="material-icons">grade</i></span>':"")+
-                            '</li>';
-                        });
+    	if(
+      	(parseInt(groupedEvents[date][0]["start"]) >= today.getTime()) &&
+      	(parseInt(groupedEvents[date][0]["start"]) <= new Date(today.getFullYear(),today.getMonth(),today.getDate() + 7).getTime())
+      ){
+            var day = '<div class="col s12 m6">'+
+                '<ul class="collection with-header z-depth-5">'+
+                '<li class="collection-header"><h4><i class="material-icons">date_range</i> ' + date + '</h4></li>';
+            groupedEvents[date].forEach(event => {
+                const ds = new Date(parseInt(event.start));
+                const de = new Date(parseInt(event.end));
+                day += '<li class="collection-item'+
+                (event.alias=="work"?" teal lighten-5":"")+
+                '">'+
+                '<span class="">'+
+                '<i class="tiny material-icons">access_time</i> '+
+                '</span>'+
+                ds.getHours().toString().padStart(2, '0')+":"+ds.getMinutes().toString().padStart(2, '0')+
+                "-"+
+                de.getHours().toString().padStart(2, '0')+":"+de.getMinutes().toString().padStart(2, '0')+
+                '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+
+                event.title.replace(/\(.*?\)/g, '')+
+                '</li>';
+            });
 
-                day += '</ul>'+
-            '</div>';
+            day += '</ul>'+
+                '</div>';
             container.append(day);
         }
     }

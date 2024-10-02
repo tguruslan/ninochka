@@ -109,7 +109,7 @@ function renderEvents(events) {
                 const ds = new Date(parseInt(event.start));
                 const de = new Date(parseInt(event.end));
                 day += '<li class="collection-item'+
-                (event.alias=="work"?" teal lighten-5":"")+
+                (event.alias=="work"?" blue lighten-5":"")+
                 '">'+
                 '<span class="">'+
                 '<i class="tiny material-icons">access_time</i> '+

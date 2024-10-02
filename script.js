@@ -100,7 +100,7 @@ function renderEvents(events) {
     for (const date in groupedEvents) {
     	if(
       	(parseInt(groupedEvents[date][0]["start"]) >= today.getTime()) &&
-      	(parseInt(groupedEvents[date][0]["start"]) <= new Date(today.getFullYear(),today.getMonth(),today.getDate() + 7).getTime())
+      	(parseInt(groupedEvents[date][0]["start"]) <= new Date(today.getFullYear(),today.getMonth(),today.getDate() + 14).getTime())
       ){
             var day = '<div class="col s12">'+
                 '<ul class="collection with-header z-depth-5">'+

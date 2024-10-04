@@ -104,7 +104,15 @@ function renderEvents(events) {
       ){
             var day = '<div class="col s12">'+
                 '<ul class="collection with-header z-depth-5">'+
-                '<li class="collection-header"><h4><i class="material-icons">date_range</i> ' + date + '</h4></li>';
+                '<li class="collection-header"><h4><i class="material-icons">date_range</i> ' + date + ' ' + [
+                    'Неділя',
+                    'Понеділок',
+                    'Вівторок',
+                    'Середа',
+                    'Четвер',
+                    'П`ятниця',
+                    'Субота',
+                ][new Date(parseInt(groupedEvents[date][0]["start"])).getDay()] +'</h4></li>';
             groupedEvents[date].forEach(event => {
                 const ds = new Date(parseInt(event.start));
                 const de = new Date(parseInt(event.end));

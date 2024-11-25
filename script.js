@@ -3,6 +3,25 @@ if (typeof navigator.serviceWorker !== 'undefined') {
 }
 const URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT_jDlK16raPFNfxz-rvNX9DQYDT0LnNTOGJAa5DqFJlMnnkZyr8Gutgb8yciiXy10a2sordGS8DPe4/pubhtml?gid=0&single=true';
 
+let skip = ["набирає"];
+
+function filterData(data, skip){
+  const resp = {};
+  data.forEach(event => {
+    const[start,end,title,alias]=event;
+    let add=true;
+    for (let part of skip){
+      if(title.toLowerCase().includes(skip.toLowerCase())){
+        add=false;
+      }
+    }
+    if(add){
+      resp.push({start,end,title,alias});
+    }
+  });
+  return resp;
+}
+
 function getData() {
     $.ajax({
         url: URL,
@@ -12,8 +31,8 @@ function getData() {
             const doc = parser.parseFromString(data, 'text/html');
             const json_data = $(doc).find('table tbody tr:first td:first').text();
             const result = JSON.parse(json_data);
-            renderEvents(result);
-            summLessons(result);
+            renderEvents(filterData(result, skip)):
+            summLessons(filterData(result, skip)):
         },
         error: function(error) {
             console.error('Error:', error);

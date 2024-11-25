@@ -17,6 +17,9 @@ function filterData(data, skip){
       }
     }
     if(add){
+      if (!resp[i]) {
+        resp[i] = [];
+      }
       resp[i].push({start,end,title,alias});
       i++;
     }

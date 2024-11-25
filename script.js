@@ -11,7 +11,7 @@ function filterData(data, skip){
     const[start,end,title,alias]=event;
     let add=true;
     for (let part of skip){
-      if(title.toLowerCase().includes(skip.toLowerCase())){
+      if(title.toLowerCase().includes(part.toLowerCase())){
         add=false;
       }
     }

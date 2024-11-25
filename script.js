@@ -6,7 +6,8 @@ const URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT_jDlK16raPFNfxz-r
 let skip = ["набирає"];
 
 function filterData(data, skip){
-  const resp = [];
+  const resp = {};
+  let i = 0;
   data.forEach(event => {
     const[start,end,title,alias]=event;
     let add=true;
@@ -16,7 +17,8 @@ function filterData(data, skip){
       }
     }
     if(add){
-      resp.push({start,end,title,alias});
+      resp[i].push({start,end,title,alias});
+      i++;
     }
   });
   return resp;

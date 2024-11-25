@@ -31,8 +31,8 @@ function getData() {
             const doc = parser.parseFromString(data, 'text/html');
             const json_data = $(doc).find('table tbody tr:first td:first').text();
             const result = JSON.parse(json_data);
-            renderEvents(filterData(result, skip)):
-            summLessons(filterData(result, skip)):
+            renderEvents(filterData(result, skip));
+            summLessons(filterData(result, skip));
         },
         error: function(error) {
             console.error('Error:', error);

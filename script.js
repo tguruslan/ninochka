@@ -5,30 +5,24 @@ const URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT_jDlK16raPFNfxz-r
 
 let skip = ["набирає","вихідний"];
 
-function createCookie(name, value, days) {
-    var expires;
-
-    if (days) {
-        var date = new Date();
-        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-        expires = "; expires=" + date.toGMTString();
-    } else {
-        expires = "";
-    }
-    document.cookie = encodeURIComponent(name) + "=" + encodeURIComponent(value) + expires + "; path=/";
-}
-
-function readCookie(name) {
-    var nameEQ = encodeURIComponent(name) + "=";
-    var ca = document.cookie.split(';');
-    for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) === ' ')
-            c = c.substring(1, c.length);
-        if (c.indexOf(nameEQ) === 0)
-            return decodeURIComponent(c.substring(nameEQ.length, c.length));
+function getCookieValue(cookieName) {
+    var cookies = document.cookie.split("; ");
+    for (var i = 0; i < cookies.length; i++) {
+        var cookieParts = cookies[i].split("=");
+        var name = cookieParts[0].trim();
+        var value = cookieParts[1];
+        if (name === cookieName) {
+            return value;
+        }
     }
     return null;
+}
+
+function setCookie(cookieName, cookieValue, expirationDays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (expirationDays * 24 * 60 * 60 * 1000));
+    var expires = "expires=" + d.toUTCString();
+    document.cookie = cookieName + "=" + cookieValue + ";" + expires + ";path=/";
 }
 
 
@@ -192,19 +186,13 @@ function renderEvents(events) {
 
 $(document).ready(function() {
     getData();
-    if (!readCookie("notification")){
-        Notification.requestPermission().then((result) => {
-            if (result === "granted") {
-              createCookie("notification","1",700);
-            }
-        });
-    }else{
-        setTimeout(function(){
+    if (getCookieValue("notification"))
+      setTimeout(function(){
           const now = new Date();
           const now_ts = now.getTime();
           $("[time]").each(function(){
               diff_time = $(this).attr("time") - now_ts
-              if(diff_time > 0 && diff_time < (60 * 60 * 1000)){
+              if(diff_time > 0 && diff_time < (35 * 60 * 1000)){
                   const options = {
                     body: $(this).text()
                   }

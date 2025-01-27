@@ -169,11 +169,12 @@ $(document).ready(function() {
     	const now = new Date();
       const now_ts = now.getTime();
       $("[time]").each(function(){
-      		diff_time = $(this).attr("time") - now_ts
+      	  diff_time = $(this).attr("time") - now_ts
           if(diff_time > 0 && diff_time < (35 * 60 * 1000)){
           	  const options = {
                 body: $(this).text()
               };
+              alert($(this).text())
               new Notification("rozklad", options);
               $(this).removeAttr("time");
           }

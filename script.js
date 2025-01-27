@@ -137,8 +137,11 @@ function renderEvents(events) {
             groupedEvents[date].forEach(event => {
                 const ds = new Date(parseInt(event.start));
                 const de = new Date(parseInt(event.end));
+                const now = new Date();
                 day += '<li class="collection-item'+
                 (event.alias=="work"?" blue lighten-5":"")+
+                ((de < now)?" grey grey-text":"")+
+                (((ds <= now) && (now <= de))?" cyan accent-4":"")+
                 '">'+
                 '<span class="">'+
                 '<i class="tiny material-icons">access_time</i> '+

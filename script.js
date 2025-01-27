@@ -142,7 +142,9 @@ function renderEvents(events) {
                 (event.alias=="work"?" blue lighten-5":"")+
                 ((de < now)?" grey grey-text":"")+
                 (((ds <= now) && (now <= de))?" cyan accent-4":"")+
-                '">'+
+                '"'+
+                ' time="'+ds.getTime()+'"'+
+                '>'+
                 '<span class="">'+
                 '<i class="tiny material-icons">access_time</i> '+
                 '</span>'+

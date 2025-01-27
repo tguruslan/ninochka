@@ -14,3 +14,11 @@ workbox.routing.registerRoute(
     cacheName: CACHE
   })
 );
+
+if (! getCookieValue("notification")){
+    Notification.requestPermission().then((result) => {
+        if (result === "granted") {
+          setCookie("notification","1",700);
+        }
+    });
+}

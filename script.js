@@ -5,6 +5,33 @@ const URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT_jDlK16raPFNfxz-r
 
 let skip = ["набирає","вихідний"];
 
+function createCookie(name, value, days) {
+    var expires;
+
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toGMTString();
+    } else {
+        expires = "";
+    }
+    document.cookie = encodeURIComponent(name) + "=" + encodeURIComponent(value) + expires + "; path=/";
+}
+
+function readCookie(name) {
+    var nameEQ = encodeURIComponent(name) + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) === ' ')
+            c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) === 0)
+            return decodeURIComponent(c.substring(nameEQ.length, c.length));
+    }
+    return null;
+}
+
+
 function filterData(data, skip){
   const resp = [];
   let i = 0;
@@ -165,23 +192,27 @@ function renderEvents(events) {
 
 $(document).ready(function() {
     getData();
-    // Notification.requestPermission().then((result) => {
-        // if (result === "granted") {
-        // }
-    // })
-    setTimeout(function(){
-      const now = new Date();
-      const now_ts = now.getTime();
-      $("[time]").each(function(){
-          diff_time = $(this).attr("time") - now_ts
-          if(diff_time > 0 && diff_time < (60 * 60 * 1000)){
-              const options = {
-                body: $(this).text()
-              }
-              alert($(this).text());
-              new Notification("rozklad", options);
-              $(this).removeAttr("time");
-          }
+    if (!readCookie("notification")){
+        Notification.requestPermission().then((result) => {
+            if (result === "granted") {
+              createCookie("notification","1",700);
+            }
         });
-    }, 5000);
+    }else{
+        setTimeout(function(){
+          const now = new Date();
+          const now_ts = now.getTime();
+          $("[time]").each(function(){
+              diff_time = $(this).attr("time") - now_ts
+              if(diff_time > 0 && diff_time < (60 * 60 * 1000)){
+                  const options = {
+                    body: $(this).text()
+                  }
+                  alert($(this).text());
+                  new Notification("rozklad", options);
+                  $(this).removeAttr("time");
+              }
+            });
+        }, 5000);
+    }
 });

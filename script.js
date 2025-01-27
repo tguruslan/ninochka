@@ -186,7 +186,7 @@ function renderEvents(events) {
 
 $(document).ready(function() {
     getData();
-    if (getCookieValue("notification"))
+    if (getCookieValue("notification")){
       setTimeout(function(){
           const now = new Date();
           const now_ts = now.getTime();

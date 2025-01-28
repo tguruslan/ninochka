@@ -186,7 +186,16 @@ function renderEvents(events) {
 
 $(document).ready(function() {
     getData();
-    if (getCookieValue("notification")){
+
+    if (! Cookies.get("notification")){
+        Notification.requestPermission().then((result) => {
+            if (result === "granted") {
+              Cookies.set("notification","1");
+            }
+        });
+    }
+
+    if (Cookies.get("notification")){
       setTimeout(function(){
           const now = new Date();
           const now_ts = now.getTime();

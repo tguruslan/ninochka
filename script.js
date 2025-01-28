@@ -166,28 +166,29 @@ function renderEvents(events) {
 $(document).ready(function() {
     getData();
 
-    if (! $.cookie.get("notification")){
+    if (! Cookies.get("notification")){
         Notification.requestPermission().then((result) => {
             if (result === "granted") {
-                $.cookie.set("notification","1");
+                Cookies.set("notification","1");
             }
         });
     }
 
-    if ($.cookie.get("notification")){
-      setTimeout(function(){
-          const now = new Date();
-          const now_ts = now.getTime();
-          $("[time]").each(function(){
-              diff_time = $(this).attr("time") - now_ts
-              if(diff_time > 0 && diff_time < (35 * 60 * 1000)){
-                  const options = {
-                    body: $(this).text()
-                  }
-                  alert($(this).text());
-                  new Notification("rozklad", options);
-                  $(this).removeAttr("time");
-              }
+    if (Cookies.get("notification")){
+        setTimeout(function(){
+            const now = new Date();
+            const now_ts = now.getTime();
+
+            $("[time]").each(function(){
+                diff_time = $(this).attr("time") - now_ts
+                if(diff_time > 0 && diff_time < (600 * 60 * 1000)){
+                    const options = {
+                        body: $(this).text().replace("access_time ",""),
+                        icon: "icons/icon-48-48.png",
+                    }
+                    new Notification("rozklad", options);
+                    $(this).removeAttr("time");
+                }
             });
         }, 5000);
     }

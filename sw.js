@@ -15,27 +15,27 @@ workbox.routing.registerRoute(
   })
 );
 
-function getCookieValue(cookieName) {
-  var cookies = document.cookie.split("; ");
-  for (var i = 0; i < cookies.length; i++) {
-      var cookieParts = cookies[i].split("=");
-      var name = cookieParts[0].trim();
-      var value = cookieParts[1];
-      if (name === cookieName) {
-          return value;
-      }
+function setCookie(name,value,days) {
+  var expires = "";
+  if (days) {
+      var date = new Date();
+      date.setTime(date.getTime() + (days*24*60*60*1000));
+      expires = "; expires=" + date.toUTCString();
+  }
+  document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+}
+function getCookie(name) {
+  var nameEQ = name + "=";
+  var ca = document.cookie.split(';');
+  for(var i=0;i < ca.length;i++) {
+      var c = ca[i];
+      while (c.charAt(0)==' ') c = c.substring(1,c.length);
+      if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
   }
   return null;
 }
 
-function setCookie(cookieName, cookieValue, expirationDays) {
-  var d = new Date();
-  d.setTime(d.getTime() + (expirationDays * 24 * 60 * 60 * 1000));
-  var expires = "expires=" + d.toUTCString();
-  document.cookie = cookieName + "=" + cookieValue + ";" + expires + ";path=/";
-}
-
-if (! getCookieValue("notification")){
+if (! getCookie("notification")){
     Notification.requestPermission().then((result) => {
         if (result === "granted") {
           setCookie("notification","1",700);

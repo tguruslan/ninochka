@@ -15,10 +15,10 @@ workbox.routing.registerRoute(
   })
 );
 
-if (! self.cookies.get("notification")){
+if (! Cookie.get("notification")){
     Notification.requestPermission().then((result) => {
         if (result === "granted") {
-          self.cookies.set("notification","1");
+          Cookies.set("notification","1");
         }
     });
 }

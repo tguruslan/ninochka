@@ -5,27 +5,6 @@ const URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT_jDlK16raPFNfxz-r
 
 let skip = ["набирає","вихідний","відпустка","зустріч"];
 
-function getCookieValue(cookieName) {
-    var cookies = document.cookie.split("; ");
-    for (var i = 0; i < cookies.length; i++) {
-        var cookieParts = cookies[i].split("=");
-        var name = cookieParts[0].trim();
-        var value = cookieParts[1];
-        if (name === cookieName) {
-            return value;
-        }
-    }
-    return null;
-}
-
-function setCookie(cookieName, cookieValue, expirationDays) {
-    var d = new Date();
-    d.setTime(d.getTime() + (expirationDays * 24 * 60 * 60 * 1000));
-    var expires = "expires=" + d.toUTCString();
-    document.cookie = cookieName + "=" + cookieValue + ";" + expires + ";path=/";
-}
-
-
 function filterData(data, skip){
   const resp = [];
   let i = 0;
@@ -187,15 +166,15 @@ function renderEvents(events) {
 $(document).ready(function() {
     getData();
 
-    if (! Cookies.get("notification")){
+    if (! $.cookie.get("notification")){
         Notification.requestPermission().then((result) => {
             if (result === "granted") {
-              Cookies.set("notification","1");
+                $.cookie.set("notification","1");
             }
         });
     }
 
-    if (Cookies.get("notification")){
+    if ($.cookie.get("notification")){
       setTimeout(function(){
           const now = new Date();
           const now_ts = now.getTime();

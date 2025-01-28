@@ -181,7 +181,7 @@ $(document).ready(function() {
 
             $("[time]").each(function(){
                 diff_time = $(this).attr("time") - now_ts
-                if(diff_time > 0 && diff_time < (600 * 60 * 1000)){
+                if(diff_time > 0 && diff_time < (10 * 60 * 1000)){
                     const options = {
                         body: $(this).text().replace("access_time ",""),
                         icon: "icons/icon-48-48.png",

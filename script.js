@@ -3,8 +3,8 @@ if (typeof navigator.serviceWorker !== 'undefined') {
 }
 const URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT_jDlK16raPFNfxz-rvNX9DQYDT0LnNTOGJAa5DqFJlMnnkZyr8Gutgb8yciiXy10a2sordGS8DPe4/pubhtml?gid=0&single=true';
 
-let skip = ["набирає","вихідний","відпустка"];
-let skip_summ = ["набирає","вихідний","відпустка","зустріч"];
+let skip = ["набирає","вихідний","відпустка","day off","time off","набір закрито"];
+let skip_summ = ["набирає","вихідний","відпустка","зустріч","day off","time off","pictorial meeting","набір закрито"];
 
 function filterData(data, skip){
   const resp = [];

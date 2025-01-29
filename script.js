@@ -61,10 +61,10 @@ function summLessons(data) {
     for (const lesson in data){
     	lesson_data=data[lesson];
         if(lesson_data[0] < new Date(today.getFullYear(),today.getMonth() + 1 ,1).getTime()){
-            if (!summ_data[lesson_data[2]]) {
-                summ_data[lesson_data[2]] = 0;
-            }
             if((lesson_data[3] == "work") || self_student.includes(lesson_data[2].toLowerCase())){
+                if (!summ_data[lesson_data[2]]) {
+                    summ_data[lesson_data[2]] = 0;
+                }
                 summ_data[lesson_data[2]]+=((lesson_data[1]-lesson_data[0])/1000/60/60);
             }
         }

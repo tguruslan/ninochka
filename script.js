@@ -60,24 +60,13 @@ function summLessons(data) {
     var summ_data={};
     for (const lesson in data){
     	lesson_data=data[lesson];
-    	if(
-      		(lesson_data[3] == "work") &&
-        	(lesson_data[0] < new Date(today.getFullYear(),today.getMonth() + 1 ,1).getTime())
-        ){
+        if(lesson_data[0] < new Date(today.getFullYear(),today.getMonth() + 1 ,1).getTime()){
             if (!summ_data[lesson_data[2]]) {
-            	summ_data[lesson_data[2]] = 0;
+                	summ_data[lesson_data[2]] = 0;
             }
-            summ_data[lesson_data[2]]+=((lesson_data[1]-lesson_data[0])/1000/60/60);
-      }
-      if(
-            (lesson_data[3] == "self") &&
-            (lesson_data[0] < new Date(today.getFullYear(),today.getMonth() + 1 ,1).getTime()) &&
-            ($.inArray(lesson_data[2].toLowerCase(), self_student))
-        ){
-            if (!summ_data[lesson_data[2]]) {
-                summ_data[lesson_data[2]] = 0;
+            if((lesson_data[3] == "work") || ($.inArray(lesson_data[2].toLowerCase(), self_student))){
+                summ_data[lesson_data[2]]+=((lesson_data[1]-lesson_data[0])/1000/60/60);
             }
-            summ_data[lesson_data[2]]+=((lesson_data[1]-lesson_data[0])/1000/60/60);
         }
     }
     var totalSumm=0;

@@ -6,6 +6,8 @@ const URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT_jDlK16raPFNfxz-r
 let skip = ["набирає","вихідний","відпустка","day off","time off","набір закрито"];
 let skip_summ = skip.concat(["зустріч","pictorial meeting"]);
 
+let self_student = ["юлія"];
+
 function filterData(data, skip){
   const resp = [];
   let i = 0;
@@ -67,6 +69,16 @@ function summLessons(data) {
             }
             summ_data[lesson_data[2]]+=((lesson_data[1]-lesson_data[0])/1000/60/60);
       }
+      if(
+            (lesson_data[3] == "self") &&
+            (lesson_data[0] < new Date(today.getFullYear(),today.getMonth() + 1 ,1).getTime()) &&
+            ($.inArray(lesson_data[2].toLowerCase(), self_student))
+        ){
+            if (!summ_data[lesson_data[2]]) {
+                summ_data[lesson_data[2]] = 0;
+            }
+            summ_data[lesson_data[2]]+=((lesson_data[1]-lesson_data[0])/1000/60/60);
+        }
     }
     var totalSumm=0;
     var totalHours=0;

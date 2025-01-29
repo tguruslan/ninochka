@@ -6,7 +6,9 @@ const URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT_jDlK16raPFNfxz-r
 let skip = ["набирає","вихідний","відпустка","day off","time off","набір закрито"];
 let skip_summ = skip.concat(["зустріч","pictorial meeting"]);
 
-let self_student = ["юлія"];
+let self_student = {
+    "юлія":220,
+};
 
 function filterData(data, skip){
   const resp = [];
@@ -46,10 +48,14 @@ function getData() {
 }
 
 function getPrice(name, hours){
-    if(name.toLowerCase().includes("pair")){
-  	    price=220;
+    if (Object.keys(self_student).includes(name.toLowerCase())){
+        price=self_student[name.toLowerCase()];
     }else{
-  	    price=180;
+        if(name.toLowerCase().includes("pair")){
+      	    price=220;
+        }else{
+      	    price=180;
+        }
     }
     return price*hours;
 }
@@ -61,7 +67,7 @@ function summLessons(data) {
     for (const lesson in data){
     	lesson_data=data[lesson];
         if(lesson_data[0] < new Date(today.getFullYear(),today.getMonth() + 1 ,1).getTime()){
-            if((lesson_data[3] == "work") || self_student.includes(lesson_data[2].toLowerCase())){
+            if((lesson_data[3] == "work") || Object.keys(self_student).includes(lesson_data[2].toLowerCase())){
                 if (!summ_data[lesson_data[2]]) {
                     summ_data[lesson_data[2]] = 0;
                 }

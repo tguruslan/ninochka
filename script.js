@@ -3,7 +3,8 @@ if (typeof navigator.serviceWorker !== 'undefined') {
 }
 const URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT_jDlK16raPFNfxz-rvNX9DQYDT0LnNTOGJAa5DqFJlMnnkZyr8Gutgb8yciiXy10a2sordGS8DPe4/pubhtml?gid=0&single=true';
 
-let skip = ["набирає","вихідний","відпустка","зустріч"];
+let skip = ["зустріч"];
+let skip_summ = ["набирає","вихідний","відпустка","зустріч"];
 
 function filterData(data, skip){
   const resp = [];
@@ -34,7 +35,7 @@ function getData() {
             const json_data = $(doc).find('table tbody tr:first td:first').text();
             const result = JSON.parse(json_data);
             renderEvents(filterData(result, skip));
-            summLessons(filterData(result, skip));
+            summLessons(filterData(result, skip_summ));
         },
         error: function(error) {
             console.error('Error:', error);
